@@ -89,7 +89,7 @@ No arguments will run the model in the settings that achieved best result.
     |----dataloader.py
     |----epoch.py
     |----main.py
-    |----model.py
+    |----Models.py
     |----prepare_data.py
     |----README.md
     |----utils.py

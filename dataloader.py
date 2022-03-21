@@ -96,17 +96,24 @@ def collate_fn(insts):
     return seq_tokens_batch, tgt_tokens_batch
 
 
-def get_dataloader(args, no_dataloader=False):
+def get_dict(args):
+    """ Get dictionary only """
+    my_dict = Dictionary()
+
+    my_dict, _ = tokenize(my_dict, path=os.path.join(args.path_data, 'train.txt'))
+    my_dict, _ = tokenize(my_dict, path=os.path.join(args.path_data, 'valid.txt'))
+    my_dict, _ = tokenize(my_dict, path=os.path.join(args.path_data, 'test.txt'))
+
+    return my_dict
+
+
+def get_dataloader(args):
     """ Get dataloader and dictionary """
     my_dict = Dictionary()
 
     my_dict, train_data = tokenize(my_dict, path=os.path.join(args.path_data, 'train.txt'))
     my_dict, valid_data = tokenize(my_dict, path=os.path.join(args.path_data, 'valid.txt'))
     my_dict, test_data = tokenize(my_dict, path=os.path.join(args.path_data, 'test.txt'))
-
-    if no_dataloader:
-        # For generation and similarity calculation quest which do not need dataloader
-        return my_dict
 
     train_loader = DataLoader(WikiTextData(args, train_data), batch_size=args.batch_size,
                               num_workers=args.num_worker, collate_fn=collate_fn, shuffle=True)
@@ -115,3 +122,4 @@ def get_dataloader(args, no_dataloader=False):
     test_loader = DataLoader(WikiTextData(args, test_data), batch_size=args.batch_size, num_workers=args.num_worker,
                              collate_fn=collate_fn, shuffle=True)
     return my_dict, train_loader, valid_loader, test_loader
+
