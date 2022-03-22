@@ -1,14 +1,33 @@
-import numpy as np
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from transformer.Modules import ScaledDotProductAttention
+
+
+class ScaledDotProductAttention(nn.Module):
+    """ QKV attention layer"""
+
+    def __init__(self, temperature):
+        super(ScaledDotProductAttention, self).__init__()
+        self.temperature = temperature
+        self.softmax = nn.Softmax(dim=-1)
+
+    def forward(self, q, k, v, mask=None, eps=1e-12):
+
+        # q, k, v: batch_size * head * length * d_tensor
+        attn = torch.matmul(q, k.transpose(2, 3)) / self.temperature  # scaled dot product
+        if mask is not None:
+            attn = attn.masked_fill(mask == 0, -eps)
+        score = self.softmax(attn)
+        v = torch.matmul(score, v)
+
+        return v, score
 
 
 class MultiHeadAttention(nn.Module):
-    ''' Multi-Head Attention module '''
+    """ Multi-head attention sublayer """
 
     def __init__(self, n_head, d_model, d_k, d_v, dropout=0.1):
-        super().__init__()
+        super(MultiHeadAttention, self).__init__()
 
         self.n_head = n_head
         self.d_k = d_k
@@ -23,7 +42,6 @@ class MultiHeadAttention(nn.Module):
 
         self.dropout = nn.Dropout(dropout)
         self.layer_norm = nn.LayerNorm(d_model, eps=1e-6)
-
 
     def forward(self, q, k, v, mask=None):
 
@@ -58,10 +76,10 @@ class MultiHeadAttention(nn.Module):
 
 
 class PositionwiseFeedForward(nn.Module):
-    ''' A two-feed-forward-layer module '''
+    """ A two-feed-forward-layer module """
 
     def __init__(self, d_in, d_hid, dropout=0.1):
-        super().__init__()
+        super(PositionwiseFeedForward, self).__init__()
         self.w_1 = nn.Linear(d_in, d_hid) # position-wise
         self.w_2 = nn.Linear(d_hid, d_in) # position-wise
         self.layer_norm = nn.LayerNorm(d_in, eps=1e-6)

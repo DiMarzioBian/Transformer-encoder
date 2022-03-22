@@ -65,7 +65,7 @@ def main():
     # prepare data and model
     train_loader, valid_loader, test_loader = get_dataloader(args)
 
-    model = Transformer(args, word2idx, char2idx, tag2idx, glove_word).to(args.device)
+    model = Transformer(args).to(args.device)
     args.criterion = nn.CrossEntropyLoss()
 
     optimizer = torch.optim.Adam(filter(lambda x: x.requires_grad, model.parameters()), lr=args.lr,
