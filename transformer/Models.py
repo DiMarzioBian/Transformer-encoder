@@ -18,8 +18,6 @@ class Transformer(nn.Module):
         """
         super(Transformer, self).__init__()
         self.device = args.device
-        self.enable_crf = args.enable_crf
-        self.idx_pad_tag = args.idx_pad_tag
 
         self.max_len_word = args.max_len_word
 
@@ -29,13 +27,6 @@ class Transformer(nn.Module):
         # embedding layer
         self.embedding_char = nn.Embedding(self.n_char+1, self.dim_emb_char, padding_idx=self.idx_pad_char)
         init_embedding(self.embedding_char)
-
-        if args.enable_pretrained:
-            self.embedding_word = nn.Embedding.from_pretrained(torch.FloatTensor(glove_word), freeze=args.freeze_glove,
-                                                               padding_idx=self.idx_pad_word)
-        else:
-            self.embedding_word = nn.Embedding(self.n_word+1, self.dim_emb_word)
-            init_embedding(self.embedding_word)
 
         # character encoder
         if self.mode_char == 'lstm':

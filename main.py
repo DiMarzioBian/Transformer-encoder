@@ -72,7 +72,7 @@ def main():
     torch.cuda.manual_seed_all(args.seed)
 
     # prepare data and model
-    train_loader, valid_loader, test_loader = get_dataloader(args)
+    vocab, train_loader, valid_loader, test_loader = get_dataloader(args)
 
     model = Transformer(args).to(args.device)
     args.criterion = nn.CrossEntropyLoss()

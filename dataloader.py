@@ -94,7 +94,7 @@ def get_dataloader(args):
         vocab, valid_data = tokenize(vocab, path=os.path.join(args.path_data, 'valid.txt'), pad_number=args.pad_number,
                                      lower_char=args.lower_char)
         vocab, test_data = tokenize(vocab, path=os.path.join(args.path_data, 'test.txt'), pad_number=args.pad_number,
-                                     lower_char=args.lower_char)
+                                    lower_char=args.lower_char)
         with open(args.path_data_processed, 'wb') as f:
             mappings = {
                 'vocab': vocab,
