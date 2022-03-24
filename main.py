@@ -31,9 +31,9 @@ def main():
     # training settings
     parser.add_argument('--n_gram', type=int, default=40,
                         help='number of transformer layer for both encoder and decoder')
-    parser.add_argument('--num_worker', type=int, default=0,
+    parser.add_argument('--num_worker', type=int, default=5,
                         help='number of dataloader worker')
-    parser.add_argument('--batch_size', type=int, default=8, metavar='N',
+    parser.add_argument('--batch_size', type=int, default=200, metavar='N',
                         help='batch size')
     parser.add_argument('--epochs', type=int, default=100,
                         help='upper epoch limit')
