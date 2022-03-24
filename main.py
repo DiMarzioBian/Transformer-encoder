@@ -13,8 +13,6 @@ def main():
     parser = argparse.ArgumentParser(description='Transformer project')
 
     # model setting
-    parser.add_argument('--n_gram', type=int, default=40,
-                        help='number of transformer layer for both encoder and decoder')
     parser.add_argument('--n_layer', type=int, default=3,
                         help='number of transformer layer for both encoder and decoder')
     parser.add_argument('--d_model', type=int, default=512,
@@ -31,8 +29,8 @@ def main():
                         help='lower characters" cases')
 
     # training settings
-    parser.add_argument('--num_worker', type=int, default=5,
-                        help='number of dataloader worker')
+    parser.add_argument('--n_gram', type=int, default=40,
+                        help='number of transformer layer for both encoder and decoder')
     parser.add_argument('--batch_size', type=int, default=200, metavar='N',
                         help='batch size')
     parser.add_argument('--epochs', type=int, default=100,
@@ -53,6 +51,8 @@ def main():
     # file settings
     parser.add_argument('--seed', type=int, default=1111,
                         help='random seed')
+    parser.add_argument('--num_worker', type=int, default=5,
+                        help='number of dataloader worker')
     parser.add_argument('--device', type=str, default='cuda:0',
                         help='device for computing')
     parser.add_argument('--path_data', type=str, default='./data/wikitext-2/',
@@ -73,6 +73,7 @@ def main():
 
     # prepare data and model
     vocab, train_loader, valid_loader, test_loader = get_dataloader(args)
+    args.n_word = len(vocab)
 
     model = Transformer(args).to(args.device)
     args.criterion = nn.CrossEntropyLoss()
