@@ -19,7 +19,7 @@ def main():
                         help='model feature dimension')
     parser.add_argument('--n_head', type=int, default=8,
                         help='number of attention heads')
-    parser.add_argument('--d_ffn', type=int, default=1024,
+    parser.add_argument('--d_inner', type=int, default=1024,
                         help='hidden representation size of the feed-forward layer')
 
     # preprocess
@@ -31,7 +31,9 @@ def main():
     # training settings
     parser.add_argument('--n_gram', type=int, default=40,
                         help='number of transformer layer for both encoder and decoder')
-    parser.add_argument('--batch_size', type=int, default=200, metavar='N',
+    parser.add_argument('--num_worker', type=int, default=0,
+                        help='number of dataloader worker')
+    parser.add_argument('--batch_size', type=int, default=8, metavar='N',
                         help='batch size')
     parser.add_argument('--epochs', type=int, default=100,
                         help='upper epoch limit')
@@ -51,8 +53,6 @@ def main():
     # file settings
     parser.add_argument('--seed', type=int, default=1111,
                         help='random seed')
-    parser.add_argument('--num_worker', type=int, default=5,
-                        help='number of dataloader worker')
     parser.add_argument('--device', type=str, default='cuda:0',
                         help='device for computing')
     parser.add_argument('--path_data', type=str, default='./data/wikitext-2/',
@@ -86,9 +86,9 @@ def main():
 
     # Start modeling
     print('\n[info] | n_param {n_param} | n_layer {n_layer} | d_model {d_model} | n_head {n_head} | d_k {d_k} | '
-          'd_ffn {d_ffn} |'
+          'd_inner {d_inner} |'
           .format(n_param=n_param, n_layer=args.n_layer, d_model=args.d_model, n_head=args.n_head, d_k=args.d_k,
-                  d_ffn=args.d_ffn))
+                  d_inner=args.d_inner))
     best_loss_val = 1e5
     best_epoch = 0
     es_patience = 0
@@ -133,9 +133,9 @@ def main():
     print('  | Test | loss {:5.4f} | ppl {:5.4f} |'
           .format(loss_test, torch.exp(loss_test)))
     print('\n[info] | n_param {n_param} | n_layer {n_layer} | d_model {d_model} | n_head {n_head} | d_k {d_k} | '
-          'd_ffn {d_ffn} |'
+          'd_inner {d_inner} |'
           .format(n_param=n_param, n_layer=args.n_layer, d_model=args.d_model, n_head=args.n_head, d_k=args.d_k,
-                  d_ffn=args.d_ffn))
+                  d_inner=args.d_inner))
 
 
 if __name__ == '__main__':

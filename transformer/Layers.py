@@ -6,25 +6,22 @@ from transformer.SubLayers import MultiHeadAttention, PositionwiseFeedForward
 class PositionalEncoding(nn.Module):
     """ add sinusoid encoding """
 
-    def __init__(self, d_model, max_len):
+    def __init__(self, d_model, max_len, device):
         super(PositionalEncoding, self).__init__()
 
-        self.encoding = torch.zeros(max_len, d_model)
+        self.encoding = torch.zeros(max_len, d_model).to(device)
         self.encoding.requires_grad = False  # we don't need to compute gradient
 
         pos = torch.arange(0, max_len).float().unsqueeze(dim=1)
-        # 1D => 2D unsqueeze to represent word's position
 
         _2i = torch.arange(0, d_model, step=2).float()
-        # 'i' means index of d_model (e.g. embedding size = 50, 'i' = [0,50])
-        # "step=2" means 'i' multiplied with two (same with 2 * i)
 
         self.encoding[:, 0::2] = torch.sin(pos / (10000 ** (_2i / d_model)))
         self.encoding[:, 1::2] = torch.cos(pos / (10000 ** (_2i / d_model)))
         # compute positional encoding to consider positional information of words
 
     def forward(self, x):
-        batch_size, len_seq = x.size()
+        (batch_size, len_seq, _) = x.shape
         return self.encoding[:len_seq, :]
 
 
@@ -65,7 +62,7 @@ class DecoderLayer(nn.Module):
 class Encoder(nn.Module):
     """ Transformer encoder """
     def __init__(self, n_layer, d_model, d_inner, n_head, d_k, d_v, dropout=0.1):
-        super(Encoder).__init__()
+        super(Encoder, self).__init__()
         self.layers = nn.ModuleList([EncoderLayer(d_model=d_model,
                                                   d_inner=d_inner,
                                                   n_head=n_head,
@@ -76,17 +73,17 @@ class Encoder(nn.Module):
 
     def forward(self, x, slf_attn_mask=None):
 
-        slf_attn = []
+        enc_slf_attn = []
         for layer in self.layers:
-            x, enc_slf_attn = layer(x, slf_attn_mask)
-            slf_attn.append(enc_slf_attn)
-        return x, slf_attn
+            x, slf_attn = layer(x, slf_attn_mask)
+            enc_slf_attn.append(slf_attn)
+        return x, enc_slf_attn
 
 
 class Decoder(nn.Module):
     """ Transformer decoder """
     def __init__(self, n_layer, d_model, d_inner, n_head, d_k, d_v, dropout=0.1):
-        super(Decoder).__init__()
+        super(Decoder, self).__init__()
         self.layers = nn.ModuleList([DecoderLayer(d_model=d_model,
                                                   d_inner=d_inner,
                                                   n_head=n_head,
@@ -97,9 +94,9 @@ class Decoder(nn.Module):
 
     def forward(self, x, enc_outputs, slf_attn_mask=None):
 
-        slf_attn, enc_attn = [], []
+        dec_slf_attn, dec_enc_attn = [], []
         for layer in self.layers:
-            x, dec_slf_attn, dec_enc_attn = layer(x, enc_outputs, slf_attn_mask)
-            slf_attn.append(dec_slf_attn)
-            enc_attn.append(dec_enc_attn)
-        return x, slf_attn, enc_attn
+            x, slf_attn, enc_attn = layer(x, enc_outputs, slf_attn_mask)
+            dec_slf_attn.append(slf_attn)
+            dec_enc_attn.append(enc_attn)
+        return x, dec_slf_attn, dec_enc_attn
