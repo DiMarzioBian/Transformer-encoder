@@ -13,7 +13,7 @@ def main():
     parser = argparse.ArgumentParser(description='Transformer project')
 
     # model setting
-    parser.add_argument('--n_layer', type=int, default=3,
+    parser.add_argument('--n_layer', type=int, default=1,
                         help='number of transformer layer for both encoder and decoder')
     parser.add_argument('--d_model', type=int, default=512,
                         help='model feature dimension')
@@ -27,27 +27,29 @@ def main():
                         help='pad all numbers to a same <num>')
     parser.add_argument('--lower_char', type=bool, default=True,
                         help='lower characters" cases')
+    parser.add_argument('--weight_sharing', type=bool, default=True,
+                        help='sharing weights of predictor and embedding')
 
     # training settings
     parser.add_argument('--n_gram', type=int, default=40,
                         help='number of transformer layer for both encoder and decoder')
-    parser.add_argument('--num_worker', type=int, default=5,
+    parser.add_argument('--num_worker', type=int, default=10,
                         help='number of dataloader worker')
     parser.add_argument('--batch_size', type=int, default=200, metavar='N',
                         help='batch size')
     parser.add_argument('--epochs', type=int, default=100,
                         help='upper epoch limit')
-    parser.add_argument('--dropout', type=float, default=0.5,
+    parser.add_argument('--dropout', type=float, default=0.1,
                         help='dropout rate applied to layers (0 = no dropout)')
-    parser.add_argument('--lr', type=float, default=1e-2,
+    parser.add_argument('--lr', type=float, default=1e-3,
                         help='initial learning rate')
-    parser.add_argument('--lr_step', type=int, default=10,
+    parser.add_argument('--lr_step', type=int, default=20,
                         help='number of epoch for each lr downgrade')
     parser.add_argument('--lr_gamma', type=float, default=0.1,
                         help='strength of lr downgrade')
     parser.add_argument('--es_patience_max', type=int, default=10,
                         help='max early stopped patience')
-    parser.add_argument('--eps_f1', type=float, default=1e-4,
+    parser.add_argument('--eps_f1', type=float, default=0,
                         help='minimum f1 score difference threshold')
 
     # file settings
@@ -86,9 +88,9 @@ def main():
 
     # Start modeling
     print('\n[info] | n_param {n_param} | n_layer {n_layer} | d_model {d_model} | n_head {n_head} | d_k {d_k} | '
-          'd_inner {d_inner} |'
+          'd_inner {d_inner} | n_gram {n_gram} |'
           .format(n_param=n_param, n_layer=args.n_layer, d_model=args.d_model, n_head=args.n_head, d_k=args.d_k,
-                  d_inner=args.d_inner))
+                  d_inner=args.d_inner, n_gram=args.n_gram))
     best_loss_val = 1e5
     best_epoch = 0
     es_patience = 0
@@ -122,7 +124,7 @@ def main():
                 break
         # logging
         print('  | Valid | loss {:5.4f} | ppl {:5.4f} | es_patience {:.0f}/{:.0f} |'
-              .format(loss_val, torch.exp(loss_train), es_patience, args.es_patience_max))
+              .format(loss_val, torch.exp(loss_val), es_patience, args.es_patience_max))
 
     # testing phase
     print('\n[Testing]')
@@ -133,9 +135,9 @@ def main():
     print('  | Test | loss {:5.4f} | ppl {:5.4f} |'
           .format(loss_test, torch.exp(loss_test)))
     print('\n[info] | n_param {n_param} | n_layer {n_layer} | d_model {d_model} | n_head {n_head} | d_k {d_k} | '
-          'd_inner {d_inner} |'
+          'd_inner {d_inner} | n_gram {n_gram} |\n'
           .format(n_param=n_param, n_layer=args.n_layer, d_model=args.d_model, n_head=args.n_head, d_k=args.d_k,
-                  d_inner=args.d_inner))
+                  d_inner=args.d_inner, n_gram=args.n_gram))
 
 
 if __name__ == '__main__':

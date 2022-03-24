@@ -26,7 +26,7 @@ class ScaledDotProductAttention(nn.Module):
 class MultiHeadAttention(nn.Module):
     """ Multi-head attention sublayer """
 
-    def __init__(self, n_head, d_model, d_k, d_v, dropout=0.1):
+    def __init__(self, n_head, d_model, d_k, d_v, scaled_attn=True, dropout=0.1):
         super(MultiHeadAttention, self).__init__()
 
         self.n_head = n_head
@@ -38,9 +38,12 @@ class MultiHeadAttention(nn.Module):
         self.w_vs = nn.Linear(d_model, n_head * d_v, bias=False)
         self.fc = nn.Linear(n_head * d_v, d_model, bias=False)
 
-        self.attention = ScaledDotProductAttention(temperature=d_k ** 0.5)
+        if scaled_attn:
+            self.attention = ScaledDotProductAttention(temperature=d_k ** 0.5)
+        else:
+            self.attention = ScaledDotProductAttention(temperature=1)
 
-        self.dropout = nn.Dropout(dropout)
+        self.dropout = nn.Dropout(p=dropout)
         self.layer_norm = nn.LayerNorm(d_model, eps=1e-6)
 
     def forward(self, q, k, v, mask=None):

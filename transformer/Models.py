@@ -1,7 +1,7 @@
 import copy
 import torch
 import torch.nn as nn
-from utils import init_embedding, init_lstm, init_linear
+from utils import init_embedding, init_linear
 
 from transformer.Layers import PositionalEncoding, Encoder, Decoder
 
@@ -25,6 +25,8 @@ class Transformer(nn.Module):
         self.embedding = nn.Embedding(self.n_word, self.d_model)
         init_embedding(self.embedding)
         self.pos_enc = PositionalEncoding(self.d_model, self.n_gram, self.device)
+        self.dropout1 = nn.Dropout(p=self.dropout)
+        self.layer_norm = nn.LayerNorm(self.d_model, eps=1e-6)
 
         # transformer
         self.encoder = Encoder(self.n_layer, self.d_model, self.d_inner, self.n_head, self.d_k, self.d_v, self.dropout)
@@ -32,11 +34,16 @@ class Transformer(nn.Module):
 
         # predictor
         self.fc1 = nn.Linear(self.d_model, self.n_word, bias=True)
-        self.fc1.weight = self.embedding.weight
+        if args.weight_sharing:
+            self.fc1.weight = self.embedding.weight
+        else:
+            init_linear(self.fc1)
 
     def forward(self, inputs):
         inputs = self.embedding(inputs)
         inputs += self.pos_enc(inputs)
+        inputs = self.dropout1(inputs)
+        inputs = self.layer_norm(inputs)
 
         enc_outputs, enc_slf_attn = self.encoder(inputs)
         dec_outputs, dec_slf_attn, dec_enc_attn = self.decoder(inputs, enc_outputs)
