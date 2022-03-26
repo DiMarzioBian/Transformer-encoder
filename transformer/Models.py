@@ -4,6 +4,7 @@ import torch.nn as nn
 from utils import init_embedding, init_linear
 
 from transformer.Layers import PositionalEncoding, Encoder, Decoder
+from transformer.Utils import get_pad_mask, get_subsequent_mask
 
 
 class Transformer(nn.Module):
@@ -39,8 +40,9 @@ class Transformer(nn.Module):
         else:
             init_linear(self.fc1)
 
-    def forward(self, inputs):
-        inputs = self.embedding(inputs)
+    def forward(self, seq_batch, tgt_batch):
+
+        inputs = self.embedding(seq_batch)
         inputs += self.pos_enc(inputs)
         inputs = self.dropout1(inputs)
         inputs = self.layer_norm(inputs)
