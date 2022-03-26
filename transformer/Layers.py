@@ -75,7 +75,7 @@ class Encoder(nn.Module):
 
         enc_slf_attn = []
         for layer in self.layers:
-            x, slf_attn = layer(x, slf_attn_mask=None)
+            x, slf_attn = layer(x, slf_attn_mask=slf_attn_mask)
             enc_slf_attn.append(slf_attn)
         return x, enc_slf_attn
 
