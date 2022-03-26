@@ -23,7 +23,7 @@ def main():
                         help='hidden representation size of the feed-forward layer')
 
     # preprocess use
-    parser.add_argument('--initial_preprocess', type=bool, default=True,
+    parser.add_argument('--initial_preprocess', type=bool, default=False,
                         help='initial data preprocess strategy')
     parser.add_argument('--pad_number', type=bool, default=True,
                         help='pad all numbers to a same <num>')
@@ -33,11 +33,11 @@ def main():
                         help='sharing weights of predictor and embedding')
 
     # training settings
-    parser.add_argument('--n_gram', type=int, default=40,
+    parser.add_argument('--n_gram', type=int, default=25,
                         help='number of transformer layer for both encoder and decoder')
-    parser.add_argument('--num_worker', type=int, default=10,
+    parser.add_argument('--num_worker', type=int, default=15,
                         help='number of dataloader worker')
-    parser.add_argument('--batch_size', type=int, default=200, metavar='N',
+    parser.add_argument('--batch_size', type=int, default=2000, metavar='N',
                         help='batch size')
     parser.add_argument('--epochs', type=int, default=100,
                         help='upper epoch limit')
