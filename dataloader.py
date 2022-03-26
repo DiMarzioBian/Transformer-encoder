@@ -54,16 +54,23 @@ def tokenize(dictionary, path, pad_number, lower_char):
 class WikiTextData(Dataset):
     """ WikiText Dataset """
     def __init__(self, args, tks_file):
+        self.initial_preprocess = args.initial_preprocess
         self.n_gram = args.n_gram
         self.tokens_file = tks_file
-        self.length = len(tks_file) - args.n_gram
+        if self.initial_preprocess:
+            self.length = len(tks_file) // (args.n_gram+1)
+        else:
+            self.length = len(tks_file) - args.n_gram
 
     def __len__(self):
         return self.length
 
     def __getitem__(self, index):
-        return self.tokens_file[index * self.n_gram: (index+1) * self.n_gram], \
-               self.tokens_file[(index+1) * self.n_gram]
+        if self.initial_preprocess:
+            return self.tokens_file[index * self.n_gram: (index+1) * self.n_gram], \
+                   self.tokens_file[(index+1) * self.n_gram]
+        else:
+            return self.tokens_file[index: index+self.n_gram], self.tokens_file[index+self.n_gram]
 
 
 def collate_fn(insts):
