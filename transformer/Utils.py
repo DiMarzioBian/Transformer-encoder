@@ -3,6 +3,18 @@ import torch
 PAD = 0
 
 
+def get_pad_mask(seq):
+    return (seq != PAD).unsqueeze(-2)
+
+
+def get_subsequent_mask(seq):
+    # masking future elements
+    sz_b, len_s = seq.size()
+    subsequent_mask = (1 - torch.triu(
+        torch.ones((1, len_s, len_s), device=seq.device), diagonal=1)).bool()
+    return subsequent_mask
+
+
 def get_attn_pad_mask(seq_q, seq_k):
     # masking padding elements
     assert seq_q.dim() == 2 and seq_k.dim() == 2

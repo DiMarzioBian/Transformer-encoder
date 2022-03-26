@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from transformer.SubLayers import MultiHeadAttention, PositionwiseFeedForward
+from transformer.Utils import get_attn_pad_mask, get_attn_subsequent_mask
 
 
 class PositionalEncoding(nn.Module):
@@ -71,11 +72,12 @@ class Encoder(nn.Module):
                                                   dropout=dropout)
                                      for _ in range(n_layer)])
 
-    def forward(self, x, slf_attn_mask=None):
+    def forward(self, x):
 
         enc_slf_attn = []
+        enc_slf_attn_mask = get_attn_pad_mask(x, x)
         for layer in self.layers:
-            x, slf_attn = layer(x, slf_attn_mask)
+            x, slf_attn = layer(x, slf_attn_mask=enc_slf_attn_mask)
             enc_slf_attn.append(slf_attn)
         return x, enc_slf_attn
 
@@ -92,11 +94,19 @@ class Decoder(nn.Module):
                                                   dropout=dropout)
                                      for _ in range(n_layer)])
 
-    def forward(self, x, enc_outputs, slf_attn_mask=None):
+    def forward(self, x, enc_outputs):
 
         dec_slf_attn, dec_enc_attn = [], []
+
+        dec_self_attn_pad_mask = get_attn_pad_mask(x, x)
+        dec_self_attn_subsequent_mask = get_attn_subsequent_mask(x)
+        dec_self_attn_mask = torch.gt((dec_self_attn_pad_mask + dec_self_attn_subsequent_mask), 0)
+
+        dec_enc_attn_pad_mask = get_attn_pad_mask(x, x)
+
         for layer in self.layers:
-            x, slf_attn, enc_attn = layer(x, enc_outputs, slf_attn_mask)
+            x, slf_attn, enc_attn = layer(x, enc_outputs, slf_attn_mask=dec_self_attn_mask,
+                                          dec_enc_attn_mask=dec_enc_attn_pad_mask)
             dec_slf_attn.append(slf_attn)
             dec_enc_attn.append(enc_attn)
         return x, dec_slf_attn, dec_enc_attn
