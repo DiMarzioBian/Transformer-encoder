@@ -56,7 +56,7 @@ class WikiTextData(Dataset):
     def __init__(self, args, tks_file):
         self.n_gram = args.n_gram
         self.tokens_file = tks_file
-        self.length = len(tks_file) // (args.n_gram+1)
+        self.length = len(tks_file) - args.n_gram
 
     def __len__(self):
         return self.length
@@ -71,7 +71,7 @@ def collate_fn(insts):
     seq_tokens_batch, tgt_tokens_batch = list(zip(*insts))
 
     seq_tokens_batch = torch.LongTensor(seq_tokens_batch)
-    tgt_tokens_batch = torch.LongTensor(tgt_tokens_batch)
+    tgt_tokens_batch = torch.LongTensor(tgt_tokens_batch).unsqueeze(-1)
     return seq_tokens_batch, tgt_tokens_batch
 
 
