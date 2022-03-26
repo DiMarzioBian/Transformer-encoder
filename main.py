@@ -23,8 +23,8 @@ def main():
                         help='hidden representation size of the feed-forward layer')
 
     # preprocess use
-    parser.add_argument('--initial_preprocess', type=bool, default=False,
-                        help='initial data preprocess strategy')
+    parser.add_argument('--overlap', type=bool, default=False,
+                        help='data preprocess strategy')
     parser.add_argument('--pad_number', type=bool, default=True,
                         help='pad all numbers to a same <num>')
     parser.add_argument('--lower_char', type=bool, default=True,
