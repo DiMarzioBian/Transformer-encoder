@@ -12,7 +12,7 @@ def train(args, model, data, optimizer):
         len_batch = seq_batch.shape[0]
 
         optimizer.zero_grad()
-        scores_batch, *_ = model(seq_batch, tgt_batch)
+        scores_batch, *_ = model(seq_batch)
         loss_batch = args.criterion(scores_batch, tgt_batch)
         loss_batch.backward()
         optimizer.step()

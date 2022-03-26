@@ -78,7 +78,7 @@ def collate_fn(insts):
     seq_tokens_batch, tgt_tokens_batch = list(zip(*insts))
 
     seq_tokens_batch = torch.LongTensor(seq_tokens_batch)
-    tgt_tokens_batch = torch.LongTensor(tgt_tokens_batch).unsqueeze(-1)
+    tgt_tokens_batch = torch.LongTensor(tgt_tokens_batch)
     return seq_tokens_batch, tgt_tokens_batch
 
 
