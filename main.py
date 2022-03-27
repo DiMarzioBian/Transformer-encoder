@@ -23,8 +23,6 @@ def main():
                         help='hidden representation size of the feed-forward layer')
 
     # preprocess use
-    parser.add_argument('--overlap', type=bool, default=False,
-                        help='data preprocess strategy')
     parser.add_argument('--pad_number', type=bool, default=True,
                         help='pad all numbers to a same <num>')
     parser.add_argument('--lower_char', type=bool, default=True,
@@ -35,9 +33,9 @@ def main():
     # training settings
     parser.add_argument('--n_gram', type=int, default=25,
                         help='number of transformer layer for both encoder and decoder')
-    parser.add_argument('--num_worker', type=int, default=15,
+    parser.add_argument('--num_worker', type=int, default=0,
                         help='number of dataloader worker')
-    parser.add_argument('--batch_size', type=int, default=2000, metavar='N',
+    parser.add_argument('--batch_size', type=int, default=8, metavar='N',
                         help='batch size')
     parser.add_argument('--epochs', type=int, default=100,
                         help='upper epoch limit')
@@ -86,12 +84,12 @@ def main():
                                  weight_decay=1e-4)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=args.lr_step, gamma=args.lr_gamma)
 
-    n_param = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    n_param_encoder = sum(p.numel() for p in model.encoder.parameters() if p.requires_grad)
 
     # Start modeling
     print('\n[info] | n_param {n_param} | n_layer {n_layer} | d_model {d_model} | n_head {n_head} | d_k {d_k} | '
           'd_inner {d_inner} | n_gram {n_gram} |'
-          .format(n_param=n_param, n_layer=args.n_layer, d_model=args.d_model, n_head=args.n_head, d_k=args.d_k,
+          .format(n_param=n_param_encoder, n_layer=args.n_layer, d_model=args.d_model, n_head=args.n_head, d_k=args.d_k,
                   d_inner=args.d_inner, n_gram=args.n_gram))
     best_loss_val = 1e5
     best_epoch = 0
@@ -138,7 +136,7 @@ def main():
           .format(loss_test, torch.exp(loss_test)))
     print('\n[info] | n_param {n_param} | n_layer {n_layer} | d_model {d_model} | n_head {n_head} | d_k {d_k} | '
           'd_inner {d_inner} | n_gram {n_gram} |\n'
-          .format(n_param=n_param, n_layer=args.n_layer, d_model=args.d_model, n_head=args.n_head, d_k=args.d_k,
+          .format(n_param=n_param_encoder, n_layer=args.n_layer, d_model=args.d_model, n_head=args.n_head, d_k=args.d_k,
                   d_inner=args.d_inner, n_gram=args.n_gram))
 
 
