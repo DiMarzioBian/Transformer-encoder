@@ -29,15 +29,15 @@ def main():
                         help='pad all numbers to a same <num>')
     parser.add_argument('--lower_char', type=bool, default=True,
                         help='lower characters" cases')
-    parser.add_argument('--weight_sharing', type=bool, default=True,
+    parser.add_argument('--weight_sharing', type=bool, default=False,
                         help='sharing weights of predictor and embedding')
 
     # training settings
     parser.add_argument('--n_gram', type=int, default=25,
                         help='number of transformer layer for both encoder and decoder')
-    parser.add_argument('--num_worker', type=int, default=15,
+    parser.add_argument('--num_worker', type=int, default=0,
                         help='number of dataloader worker')
-    parser.add_argument('--batch_size', type=int, default=2000, metavar='N',
+    parser.add_argument('--batch_size', type=int, default=8, metavar='N',
                         help='batch size')
     parser.add_argument('--epochs', type=int, default=100,
                         help='upper epoch limit')
