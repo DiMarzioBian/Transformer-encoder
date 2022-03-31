@@ -1,36 +1,9 @@
 # Transformer
 
-This is a PyTorch implementation for the NIPS'17 paper [Attention is all you need](https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html)
+This is a toy PyTorch implementation for the NIPS'17 paper [Attention is all you need](https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html)
 
+This repo works on next-word prediction task, which is only for learning purposes.
 
-
-####  Download GloVe vectors and extract glove.6B.100d.txt into "./data/raw/" folder
-
-`wget http://nlp.stanford.edu/data/glove.6B.zip`
-
-#### Download corpus file into "./data/raw/" folder
-
-You can download the data files from within this repo [**over here**](https://github.com/TheAnig/NER-LSTM-CNN-Pytorch/tree/master/data)
-
-## Prepare data
-
-Run `python prepare_data.py`, this script accepts the following arguments:
-
-```bash
-optional arguments:
-  -h, --help                show this help message and exit
-  --seed                    random seed
-  --word_dim                token embedding dimension
-  --path_data               location of the data corpus
-  --path_embedding          path to save embedding file
-  --path_processed          path to save the processed data
-  --path_filtered           path to save the filtered processed data
-  
-  --filter_word             filter meaningless words
-  --tag_scheme              BIO or BIOES
-  --is_lowercase            control lowercasing of words
-  --digi_zero               control replacement of  all digits by
-```
 
 ## Training model
 
@@ -74,23 +47,27 @@ No arguments will run the model in the settings that achieved best result.
 
 ## File structure
 ```bash
-----BiLSTM-CNNs-CRF\
+----Transformer\
     |----data\
-    |    |----raw\
-    |    |    |----eng.testa
-    |    |    |----eng.testb
-    |    |    |----eng.train
-    |    |    |----glove.6B.100d.txt
+    |    |----wikitext-2\
+    |    |    |----data.pkl
+    |    |    |----README
+    |    |    |----text.txt
+    |    |    |----train.txt
+    |    |    |----valid.txt
     |    |----data_bundle.pkl
     |    |----data_filtered_bundle.pkl
-    |----data\
+    |----result\
     |    |----models\
     |    |    |----model.pt
+    |----transformer\
+    |    |----Layers.py\
+    |    |----Models.py\
+    |    |----SubLayers.py\
     |----dataloader.py
     |----epoch.py
     |----main.py
-    |----Models.py
-    |----prepare_data.py
+    |----plot_attention.py
     |----README.md
     |----utils.py
 ```
