@@ -37,11 +37,25 @@ class Transformer(nn.Module):
         self.decoder = Decoder(self.n_layer, self.d_model, self.d_inner, self.n_head, self.d_k, self.d_v, self.dropout)
 
         # predictor
-        self.fc1 = nn.Linear(self.d_model, self.n_word, bias=True)
-        if args.weight_sharing:
+        self.weight_sharing = args.weight_sharing
+        if self.weight_sharing == 0:
+            # 0 -> weight sharing with bias
+            self.fc1 = nn.Linear(self.d_model, self.n_word, bias=True)
             self.fc1.weight = self.embedding.weight
-        else:
+
+        elif self.weight_sharing == 1:
+            # 1 -> weight sharing without bias
+            self.fc1 = nn.Linear(self.d_model, self.n_word, bias=False)
+            self.fc1.weight = self.embedding.weight
+
+        elif self.weight_sharing == 2:
+            # 2 -> weight not sharing
+            self.fc1 = nn.Linear(self.d_model, self.n_word, bias=True)
             init_linear(self.fc1)
+
+        else:
+            # others -> embedding inner-product
+            self.fc1 = None
 
     def forward(self, seq_batch):
 
@@ -53,7 +67,10 @@ class Transformer(nn.Module):
         enc_outputs, enc_slf_attn = self.encoder(inputs, slf_attn_mask=self.subsequent_mask)
         dec_outputs, dec_slf_attn, dec_enc_attn = self.decoder(inputs, enc_outputs)
 
-        outputs = self.fc1(dec_outputs[:, -1, :].squeeze(1))
+        if self.fc1:
+            outputs = self.fc1(dec_outputs[:, -1, :].squeeze(1))
+        else:
+            outputs = torch.mm(dec_outputs[:, -1, :], self.embedding.weight.T)
 
         return outputs, enc_slf_attn, dec_slf_attn, dec_enc_attn
 

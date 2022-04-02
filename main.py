@@ -15,11 +15,11 @@ def main():
     # model setting
     parser.add_argument('--n_layer', type=int, default=1,
                         help='number of transformer layer for both encoder and decoder')
-    parser.add_argument('--d_model', type=int, default=512,
+    parser.add_argument('--d_model', type=int, default=256,
                         help='model feature dimension')
-    parser.add_argument('--n_head', type=int, default=8,
+    parser.add_argument('--n_head', type=int, default=16,
                         help='number of attention heads')
-    parser.add_argument('--d_inner', type=int, default=1024,
+    parser.add_argument('--d_inner', type=int, default=512,
                         help='hidden representation size of the feed-forward layer')
 
     # preprocess use
@@ -27,15 +27,19 @@ def main():
                         help='pad all numbers to a same <num>')
     parser.add_argument('--lower_char', type=bool, default=True,
                         help='lower characters" cases')
-    parser.add_argument('--weight_sharing', type=bool, default=False,
-                        help='sharing weights of predictor and embedding')
+    parser.add_argument('--weight_sharing', type=int, default=1,
+                        help='sharing weights of predictor and embedding:'
+                             '0 -> weight sharing with bias,'
+                             '1 -> weight sharing without bias'
+                             '2 -> weight not sharing'
+                             'others -> embedding inner-product')
 
     # training settings
     parser.add_argument('--n_gram', type=int, default=25,
                         help='number of transformer layer for both encoder and decoder')
-    parser.add_argument('--num_worker', type=int, default=0,
+    parser.add_argument('--num_worker', type=int, default=10,
                         help='number of dataloader worker')
-    parser.add_argument('--batch_size', type=int, default=8, metavar='N',
+    parser.add_argument('--batch_size', type=int, default=2000, metavar='N',
                         help='batch size')
     parser.add_argument('--epochs', type=int, default=100,
                         help='upper epoch limit')
@@ -55,7 +59,7 @@ def main():
     # file settings
     parser.add_argument('--seed', type=int, default=1111,
                         help='random seed')
-    parser.add_argument('--device', type=str, default='cuda:0',
+    parser.add_argument('--device', type=str, default='cuda:1',
                         help='device for computing')
     parser.add_argument('--path_data', type=str, default='./data/wikitext-2/',
                         help='path of the data corpus')
