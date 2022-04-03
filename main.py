@@ -22,26 +22,28 @@ def main():
     parser.add_argument('--d_inner', type=int, default=512,
                         help='hidden representation size of the feed-forward layer')
 
-    # preprocess use
+    # preprocess
+    parser.add_argument('--enable_decoder', type=bool, default=True,
+                        help='enable transformer decoder')
     parser.add_argument('--pad_number', type=bool, default=True,
                         help='pad all numbers to a same <num>')
     parser.add_argument('--lower_char', type=bool, default=True,
                         help='lower characters" cases')
-    parser.add_argument('--weight_sharing', type=int, default=1,
+    parser.add_argument('--weight_sharing', type=int, default=3,
                         help='sharing weights of predictor and embedding:'
-                             '0 -> weight sharing with bias,'
-                             '1 -> weight sharing without bias'
-                             '2 -> weight not sharing'
+                             '0 -> weight not sharing'
+                             '1 -> weight sharing with learnable bias'
+                             '2 -> weight sharing with no bias'
                              'others -> embedding inner-product')
 
     # training settings
     parser.add_argument('--n_gram', type=int, default=25,
                         help='number of transformer layer for both encoder and decoder')
-    parser.add_argument('--num_worker', type=int, default=10,
+    parser.add_argument('--num_worker', type=int, default=15,
                         help='number of dataloader worker')
-    parser.add_argument('--batch_size', type=int, default=2000, metavar='N',
+    parser.add_argument('--batch_size', type=int, default=1000, metavar='N',
                         help='batch size')
-    parser.add_argument('--epochs', type=int, default=100,
+    parser.add_argument('--epochs', type=int, default=10,
                         help='upper epoch limit')
     parser.add_argument('--dropout', type=float, default=0.1,
                         help='dropout rate applied to layers (0 = no dropout)')
@@ -59,7 +61,7 @@ def main():
     # file settings
     parser.add_argument('--seed', type=int, default=1111,
                         help='random seed')
-    parser.add_argument('--device', type=str, default='cuda:1',
+    parser.add_argument('--device', type=str, default='cuda:0',
                         help='device for computing')
     parser.add_argument('--path_data', type=str, default='./data/wikitext-2/',
                         help='path of the data corpus')

@@ -62,7 +62,7 @@ class WikiTextData(Dataset):
         return self.length
 
     def __getitem__(self, index):
-        return self.tokens_file[index: index+self.n_gram], self.tokens_file[index+self.n_gram]
+        return self.tokens_file[index: index+self.n_gram], self.tokens_file[index + 1: index + self.n_gram + 1]
 
 
 def collate_fn(insts):
@@ -71,7 +71,7 @@ def collate_fn(insts):
 
     seq_tokens_batch = torch.LongTensor(seq_tokens_batch)
     tgt_tokens_batch = torch.LongTensor(tgt_tokens_batch)
-    return seq_tokens_batch, tgt_tokens_batch
+    return seq_tokens_batch, tgt_tokens_batch.view(-1)
 
 
 def get_dataloader(args):

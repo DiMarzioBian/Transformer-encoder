@@ -23,7 +23,7 @@ class Transformer(nn.Module):
 
         # subsequent mask, our sequence length are fixed
         self.subsequent_mask = (1 - torch.triu(
-            torch.ones((1, self.n_gram, self.n_gram), device=self.device), diagonal=1)).bool()
+                torch.ones((1, self.n_gram, self.n_gram), device=self.device), diagonal=1)).bool()
 
         # embedding layer
         self.embedding = nn.Embedding(self.n_word, self.d_model)
@@ -34,24 +34,28 @@ class Transformer(nn.Module):
 
         # transformer
         self.encoder = Encoder(self.n_layer, self.d_model, self.d_inner, self.n_head, self.d_k, self.d_v, self.dropout)
-        self.decoder = Decoder(self.n_layer, self.d_model, self.d_inner, self.n_head, self.d_k, self.d_v, self.dropout)
+        if args.enable_decoder:
+            self.decoder = Decoder(self.n_layer, self.d_model, self.d_inner, self.n_head, self.d_k, self.d_v,
+                                   self.dropout)
+        else:
+            self.decoder = None
 
         # predictor
         self.weight_sharing = args.weight_sharing
         if self.weight_sharing == 0:
-            # 0 -> weight sharing with bias
+            # 0 -> weight not sharing
             self.fc1 = nn.Linear(self.d_model, self.n_word, bias=True)
-            self.fc1.weight = self.embedding.weight
+            init_linear(self.fc1)
 
         elif self.weight_sharing == 1:
-            # 1 -> weight sharing without bias
-            self.fc1 = nn.Linear(self.d_model, self.n_word, bias=False)
+            # 1 -> weight sharing with learnable bias
+            self.fc1 = nn.Linear(self.d_model, self.n_word, bias=True)
             self.fc1.weight = self.embedding.weight
 
         elif self.weight_sharing == 2:
-            # 2 -> weight not sharing
-            self.fc1 = nn.Linear(self.d_model, self.n_word, bias=True)
-            init_linear(self.fc1)
+            # 2 -> weight sharing with no bias
+            self.fc1 = nn.Linear(self.d_model, self.n_word, bias=False)
+            self.fc1.weight = self.embedding.weight
 
         else:
             # others -> embedding inner-product
@@ -65,13 +69,12 @@ class Transformer(nn.Module):
         inputs = self.layer_norm(inputs)
 
         enc_outputs, enc_slf_attn = self.encoder(inputs, slf_attn_mask=self.subsequent_mask)
-        dec_outputs, dec_slf_attn, dec_enc_attn = self.decoder(inputs, enc_outputs)
 
         if self.fc1:
-            outputs = self.fc1(dec_outputs[:, -1, :].squeeze(1))
+            outputs = self.fc1(enc_outputs.view(-1, self.d_model))
         else:
-            outputs = torch.mm(dec_outputs[:, -1, :], self.embedding.weight.T)
+            outputs = torch.mm(enc_outputs.view(-1, self.d_model), self.embedding.weight.T)
 
-        return outputs, enc_slf_attn, dec_slf_attn, dec_enc_attn
+        return outputs, enc_slf_attn
 
 
