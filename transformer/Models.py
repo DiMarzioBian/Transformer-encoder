@@ -34,11 +34,6 @@ class Transformer(nn.Module):
 
         # transformer
         self.encoder = Encoder(self.n_layer, self.d_model, self.d_inner, self.n_head, self.d_k, self.d_v, self.dropout)
-        if args.enable_decoder:
-            self.decoder = Decoder(self.n_layer, self.d_model, self.d_inner, self.n_head, self.d_k, self.d_v,
-                                   self.dropout)
-        else:
-            self.decoder = None
 
         # predictor
         self.weight_sharing = args.weight_sharing

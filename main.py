@@ -17,14 +17,12 @@ def main():
                         help='number of transformer layer for both encoder and decoder')
     parser.add_argument('--d_model', type=int, default=256,
                         help='model feature dimension')
-    parser.add_argument('--n_head', type=int, default=16,
+    parser.add_argument('--n_head', type=int, default=4,
                         help='number of attention heads')
-    parser.add_argument('--d_inner', type=int, default=512,
+    parser.add_argument('--d_inner', type=int, default=256,
                         help='hidden representation size of the feed-forward layer')
 
     # preprocess
-    parser.add_argument('--enable_decoder', type=bool, default=True,
-                        help='enable transformer decoder')
     parser.add_argument('--pad_number', type=bool, default=True,
                         help='pad all numbers to a same <num>')
     parser.add_argument('--lower_char', type=bool, default=True,

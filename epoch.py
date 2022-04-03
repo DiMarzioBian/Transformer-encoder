@@ -9,7 +9,6 @@ def train(args, model, data, optimizer):
 
     for batch in tqdm(data, desc='  - training', leave=False):
         seq_batch, tgt_batch = map(lambda x: x.to(args.device), batch)
-        _len = seq_batch.shape[0]
 
         optimizer.zero_grad()
         scores_batch, _ = model(seq_batch)
