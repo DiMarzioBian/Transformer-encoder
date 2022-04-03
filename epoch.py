@@ -11,7 +11,7 @@ def train(args, model, data, optimizer):
         seq_batch, tgt_batch = map(lambda x: x.to(args.device), batch)
 
         optimizer.zero_grad()
-        scores_batch, _ = model(seq_batch)
+        scores_batch, xx = model(seq_batch)
         loss_batch = args.criterion(scores_batch, tgt_batch)
         loss_batch.backward()
         optimizer.step()

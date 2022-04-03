@@ -1,7 +1,10 @@
 import argparse
+import numpy as np
+import math
 import torch
 from dataloader import get_dataloader
 from matplotlib import pyplot as plt
+import seaborn as sns
 
 
 def main():
@@ -14,8 +17,6 @@ def main():
                         help='path of the processed data')
 
     # data settings
-    parser.add_argument('--n_gram', type=int, default=25,
-                        help='number of transformer layer for both encoder and decoder')
     parser.add_argument('--num_worker', type=int, default=0,
                         help='number of dataloader worker')
     parser.add_argument('--batch_size', type=int, default=1, metavar='N',
@@ -31,6 +32,8 @@ def main():
     model.eval()
 
     # modeling
+    args.n_gram = model.n_gram
+    args.n_head = model.n_head
     _, _, _, test_loader = get_dataloader(args)
     with torch.no_grad():
         for batch in test_loader:
@@ -39,12 +42,24 @@ def main():
             break
 
     # plot
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    im = ax.imshow(enc_slf_attn[0][0, :, -1].tolist(), cmap='Greys')
-    plt.colorbar(im)
-    plt.show()
-    x=1
+    fig, ax = plt.subplots(nrows=math.ceil(args.n_head // 2), ncols=2, sharex='col', sharey='row')
+    cbar_ax = fig.add_axes([.91, .3, .03, .4])
+    for i, ax in enumerate(ax.flat):
+        ax.set_title('Head:'+str(i), fontstyle='italic')
+        im = sns.heatmap(enc_slf_attn[0][0, i].tolist(), ax=ax, vmin=0, vmax=1, cmap='YlGnBu', cbar=i == 0,
+                         cbar_ax=None if i else cbar_ax)
+        im.set_xticklabels(np.arange(0, args.n_gram, 1))
+        im.set_yticklabels(np.arange(1, args.n_gram + 1, 1))
+
+    fig.supxlabel('Input word sequence')
+    fig.supylabel('Ground truth')
+    plt.subplots_adjust(left=0.15,
+                        bottom=0.15,
+                        right=0.85,
+                        top=0.9,
+                        wspace=0.3,
+                        hspace=0.3)
+    fig.show()
 
 
 if __name__ == '__main__':

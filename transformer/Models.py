@@ -63,7 +63,7 @@ class Transformer(nn.Module):
         inputs = self.dropout1(inputs)
         inputs = self.layer_norm(inputs)
 
-        enc_outputs, enc_slf_attn = self.encoder(inputs, slf_attn_mask=self.subsequent_mask)
+        enc_outputs, enc_slf_attn = self.encoder(inputs, slf_attn_mask=self.subsequent_mask) # .expand(self.n_head * inputs.shape[0], self.n_gram, self.n_gram))
 
         if self.fc1:
             outputs = self.fc1(enc_outputs.view(-1, self.d_model))

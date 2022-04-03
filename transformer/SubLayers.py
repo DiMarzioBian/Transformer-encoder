@@ -11,12 +11,12 @@ class ScaledDotProductAttention(nn.Module):
         self.temperature = temperature
         self.softmax = nn.Softmax(dim=-1)
 
-    def forward(self, q, k, v, mask=None, eps=1e-12):
+    def forward(self, q, k, v, mask=None, eps=-1e12):
 
         # q, k, v: batch_size * head * length * d_tensor
         attn = torch.matmul(q, k.transpose(2, 3)) / self.temperature  # scaled dot product
         if mask is not None:
-            attn = attn.masked_fill(mask == 0, -eps)
+            attn = attn.masked_fill(mask == 0, eps)
         score = self.softmax(attn)
         v = torch.matmul(score, v)
 

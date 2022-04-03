@@ -15,9 +15,9 @@ def main():
     # model setting
     parser.add_argument('--n_layer', type=int, default=1,
                         help='number of transformer layer for both encoder and decoder')
-    parser.add_argument('--d_model', type=int, default=256,
+    parser.add_argument('--d_model', type=int, default=512,
                         help='model feature dimension')
-    parser.add_argument('--n_head', type=int, default=4,
+    parser.add_argument('--n_head', type=int, default=8,
                         help='number of attention heads')
     parser.add_argument('--d_inner', type=int, default=256,
                         help='hidden representation size of the feed-forward layer')
@@ -27,7 +27,7 @@ def main():
                         help='pad all numbers to a same <num>')
     parser.add_argument('--lower_char', type=bool, default=True,
                         help='lower characters" cases')
-    parser.add_argument('--weight_sharing', type=int, default=3,
+    parser.add_argument('--weight_sharing', type=int, default=1,
                         help='sharing weights of predictor and embedding:'
                              '0 -> weight not sharing'
                              '1 -> weight sharing with learnable bias'
@@ -35,7 +35,7 @@ def main():
                              'others -> embedding inner-product')
 
     # training settings
-    parser.add_argument('--n_gram', type=int, default=25,
+    parser.add_argument('--n_gram', type=int, default=20,
                         help='number of transformer layer for both encoder and decoder')
     parser.add_argument('--num_worker', type=int, default=15,
                         help='number of dataloader worker')
@@ -69,6 +69,7 @@ def main():
                         help='path of the trained model')
 
     args = parser.parse_args()
+    args.path_model += args.device[-1]
     args.device = torch.device(args.device)
     args.d_k = args.d_v = args.d_model // args.n_head  # key and value representation size
 
