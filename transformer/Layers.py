@@ -9,7 +9,7 @@ class PositionalEncoding(nn.Module):
     def __init__(self, d_model, max_len, device):
         super(PositionalEncoding, self).__init__()
 
-        self.encoding = torch.zeros(max_len, d_model).to(device)
+        self.encoding = torch.zeros(max_len, d_model, device=device)
         self.encoding.requires_grad = False  # we don't need to compute gradient
 
         pos = torch.arange(0, max_len).float().unsqueeze(dim=1)
