@@ -14,7 +14,7 @@ def main():
 
     # model setting
     parser.add_argument('--n_layer', type=int, default=1,
-                        help='number of transformer layer for both encoder and decoder')
+                        help='number of transformer encoder layer')
     parser.add_argument('--d_model', type=int, default=512,
                         help='model feature dimension')
     parser.add_argument('--n_head', type=int, default=8,
@@ -26,7 +26,7 @@ def main():
     parser.add_argument('--pad_number', type=bool, default=True,
                         help='pad all numbers to a same <num>')
     parser.add_argument('--lower_char', type=bool, default=True,
-                        help='lower characters" cases')
+                        help='lower cases of characters')
     parser.add_argument('--weight_sharing', type=int, default=1,
                         help='sharing weights of predictor and embedding:'
                              '0 -> weight not sharing'
@@ -36,7 +36,7 @@ def main():
 
     # training settings
     parser.add_argument('--n_gram', type=int, default=25,
-                        help='number of transformer layer for both encoder and decoder')
+                        help='max input sequence length')
     parser.add_argument('--num_worker', type=int, default=15,
                         help='number of dataloader worker')
     parser.add_argument('--batch_size', type=int, default=1000, metavar='N',
@@ -53,8 +53,8 @@ def main():
                         help='strength of lr downgrade')
     parser.add_argument('--es_patience_max', type=int, default=3,
                         help='max early stopped patience')
-    parser.add_argument('--eps_f1', type=float, default=0,
-                        help='minimum f1 score difference threshold')
+    parser.add_argument('--eps_loss', type=float, default=0,
+                        help='minimum loss difference threshold')
 
     # file settings
     parser.add_argument('--seed', type=int, default=1111,
@@ -113,7 +113,7 @@ def main():
         # validating phase
         loss_val = evaluate(args, model, valid_loader)
         if loss_val < best_loss_val:
-            if best_loss_val - loss_val > args.eps_f1:
+            if best_loss_val - loss_val > args.eps_loss:
                 es_patience = 0  # reset if beyond threshold
             with open(args.path_model, 'wb') as f:
                 torch.save(model, f)

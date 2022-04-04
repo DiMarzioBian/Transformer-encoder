@@ -13,36 +13,38 @@ Run `python main.py`, this script accepts the following arguments:
 ```bash
 optional arguments:
   -h, --help                show this help message and exit
+  --n_layer                 number of transformer encoder layer
+  --d_model                 model feature dimension
+  --n_head                  number of attention heads
+  --d_inner                 hidden representation size of the feed-forward layer
+  
+  --pad_number              pad all numbers to a same <num>
+  --lower_char              lower cases of characters
+  --weight_sharing          sharing weights of predictor and embedding:
+                              0 -> weight not sharing
+                              1 -> weight sharing with learnable bias
+                              2 -> weight sharing with no bias
+                              others -> embedding inner-product
+  
+  --n_gram                  max input sequence length
+  --num_worker              number of dataloader worker
+  --batch_size              batch size
+  --epochs                  upper epoch limit
+  --dropout                 dropout rate applied to layers (0 = no dropout)
+  --lr                      initial learning rate
+  --lr_step                 number of epoch for each lr downgrade
+  --lr_gamma                strength of lr downgrade
+  --eps_loss                  minimum loss difference threshold
+  
   --seed                    random seed
   --device                  device for computing
   --path_data               path of the data corpus
   --path_processed          path to save the filtered processed data
-  --path_filtered           optimizer type: Adam, AdamW, RMSprop, Adagrad, SGD
-  --path_pretrained         path of the data corpus
   --path_model              path of the trained model
   --num_worker              number of dataloader worker
   --batch_size              batch size
   --epochs                  upper epoch limit
   --es_patience_max         max early stopped patience
-
-  --dim_emb_char            character embedding dimension
-  --dim_emb_word            word embedding dimension
-  --dim_out_char            character encoder output dimension
-  --dim_out_word            word encoder output dimension
-  --window_kernel           window width of CNN kernel
-
-  --enable_pretrained       use pretrained glove dimension
-  --freeze_glove            free pretrained glove embedding
-  --dropout                 dropout rate applied to layers (0 = no dropout)
-  --lr                      initial learning rate
-  --lr_step                 number of epoch for each lr downgrade
-  --lr_gamma                strength of lr downgrade
-  --eps_f1                  minimum f1 score difference threshold
-
-  --mode_char               character encoder: lstm or cnn
-  --mode_word               word encoder: lstm or cnn1, cnn2, cnn3, cnn_d
-  --enable_crf              employ CRF
-  --filter_word             filter meaningless words
 ```
 No arguments will run the model in the settings that achieved best result.
 
@@ -56,9 +58,10 @@ No arguments will run the model in the settings that achieved best result.
     |    |    |----text.txt
     |    |    |----train.txt
     |    |    |----valid.txt
-    |    |----data_bundle.pkl
-    |    |----data_filtered_bundle.pkl
     |----result\
+    |    |----images\
+    |    |    |----attn.jpg
+    |    |    |----pos_enc.jpg
     |    |----models\
     |    |    |----model.pt
     |----transformer\
