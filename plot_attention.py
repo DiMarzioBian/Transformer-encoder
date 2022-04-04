@@ -41,24 +41,33 @@ def main():
             _, enc_slf_attn = model(seq_batch)
             break
 
-    # plot
-    fig, ax = plt.subplots(nrows=math.ceil(args.n_head // 2), ncols=2, sharex='col', sharey='row')
-    cbar_ax = fig.add_axes([.91, .3, .03, .4])
+    # plot attention
+    fig, ax = plt.subplots(figsize=[11, 22], nrows=math.ceil(args.n_head // 2), ncols=2, sharex='col', sharey='row')
+    cbar_ax = fig.add_axes([.95, .3, .01, .4])
     for i, ax in enumerate(ax.flat):
-        ax.set_title('Head:'+str(i), fontstyle='italic')
+        ax.set_title('Head:' + str(i), fontstyle='italic')
         im = sns.heatmap(enc_slf_attn[0][0, i].tolist(), ax=ax, vmin=0, vmax=1, cmap='YlGnBu', cbar=i == 0,
                          cbar_ax=None if i else cbar_ax)
-        im.set_xticklabels(np.arange(0, args.n_gram, 1))
+        im.set_xticklabels(np.arange(0, args.n_gram, 1), rotation=45)
         im.set_yticklabels(np.arange(1, args.n_gram + 1, 1))
+    fig.supxlabel('Input word sequence', fontsize=20)
+    fig.supylabel('Ground truth', fontsize=20)
+    plt.subplots_adjust(left=0.1,
+                        bottom=0.05,
+                        right=0.9,
+                        top=0.98,
+                        wspace=0.1,
+                        hspace=0.13)
+    fig.show()
 
-    fig.supxlabel('Input word sequence')
-    fig.supylabel('Ground truth')
-    plt.subplots_adjust(left=0.15,
-                        bottom=0.15,
-                        right=0.85,
-                        top=0.9,
-                        wspace=0.3,
-                        hspace=0.3)
+    # plot postional encoding
+    pos_enc = model.pos_enc.encoding.tolist()
+    fig = plt.figure()
+    im = sns.heatmap(list(pos_enc), cmap='YlGnBu')
+    im.tick_params(labelsize=6)
+    plt.xticks(rotation=45)
+    fig.supxlabel('Index of word index dimension')
+    fig.supylabel('Position of word')
     fig.show()
 
 

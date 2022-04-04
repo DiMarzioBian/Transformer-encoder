@@ -19,7 +19,7 @@ def main():
                         help='model feature dimension')
     parser.add_argument('--n_head', type=int, default=8,
                         help='number of attention heads')
-    parser.add_argument('--d_inner', type=int, default=256,
+    parser.add_argument('--d_inner', type=int, default=512,
                         help='hidden representation size of the feed-forward layer')
 
     # preprocess
@@ -35,7 +35,7 @@ def main():
                              'others -> embedding inner-product')
 
     # training settings
-    parser.add_argument('--n_gram', type=int, default=20,
+    parser.add_argument('--n_gram', type=int, default=25,
                         help='number of transformer layer for both encoder and decoder')
     parser.add_argument('--num_worker', type=int, default=15,
                         help='number of dataloader worker')
@@ -51,7 +51,7 @@ def main():
                         help='number of epoch for each lr downgrade')
     parser.add_argument('--lr_gamma', type=float, default=0.1,
                         help='strength of lr downgrade')
-    parser.add_argument('--es_patience_max', type=int, default=10,
+    parser.add_argument('--es_patience_max', type=int, default=3,
                         help='max early stopped patience')
     parser.add_argument('--eps_f1', type=float, default=0,
                         help='minimum f1 score difference threshold')
