@@ -61,13 +61,14 @@ class DecoderLayer(nn.Module):
 
 class Encoder(nn.Module):
     """ Transformer encoder """
-    def __init__(self, n_layer, d_model, d_inner, n_head, d_k, d_v, dropout=0.1):
+    def __init__(self, n_layer, d_model, d_inner, n_head, d_k, d_v, scaled_attn=True, dropout=0.1):
         super(Encoder, self).__init__()
         self.layers = nn.ModuleList([EncoderLayer(d_model=d_model,
                                                   d_inner=d_inner,
                                                   n_head=n_head,
                                                   d_k=d_k,
                                                   d_v=d_v,
+                                                  scaled_attn=scaled_attn,
                                                   dropout=dropout)
                                      for _ in range(n_layer)])
 
@@ -82,13 +83,14 @@ class Encoder(nn.Module):
 
 class Decoder(nn.Module):
     """ Transformer decoder """
-    def __init__(self, n_layer, d_model, d_inner, n_head, d_k, d_v, dropout=0.1):
+    def __init__(self, n_layer, d_model, d_inner, n_head, d_k, d_v, scaled_attn=True, dropout=0.1):
         super(Decoder, self).__init__()
         self.layers = nn.ModuleList([DecoderLayer(d_model=d_model,
                                                   d_inner=d_inner,
                                                   n_head=n_head,
                                                   d_k=d_k,
                                                   d_v=d_v,
+                                                  scaled_attn=scaled_attn,
                                                   dropout=dropout)
                                      for _ in range(n_layer)])
 

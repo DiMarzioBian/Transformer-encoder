@@ -13,14 +13,16 @@ def main():
     parser = argparse.ArgumentParser(description='Transformer project')
 
     # model setting
-    parser.add_argument('--n_layer', type=int, default=1,
+    parser.add_argument('--n_layer', type=int, default=3,
                         help='number of transformer encoder layer')
-    parser.add_argument('--d_model', type=int, default=512,
+    parser.add_argument('--d_model', type=int, default=256,
                         help='model feature dimension')
     parser.add_argument('--n_head', type=int, default=8,
                         help='number of attention heads')
-    parser.add_argument('--d_inner', type=int, default=512,
+    parser.add_argument('--d_inner', type=int, default=1024,
                         help='hidden representation size of the feed-forward layer')
+    parser.add_argument('--scaled_attn', type=bool, default=False,
+                        help='enable scaled attention in multi-head attention layer')
 
     # preprocess
     parser.add_argument('--pad_number', type=bool, default=True,

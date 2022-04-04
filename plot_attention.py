@@ -48,7 +48,7 @@ def main():
     cbar_ax = fig.add_axes([.95, .3, .01, .4])
     for i, ax in enumerate(ax.flat):
         ax.set_title('Head:' + str(i), fontstyle='italic')
-        im = sns.heatmap(enc_slf_attn[0][0, i].tolist(), ax=ax, vmin=0, vmax=1, cmap='YlGnBu', cbar=i == 0,
+        im = sns.heatmap(enc_slf_attn[-1][0, i].tolist(), ax=ax, vmin=0, vmax=1, cmap='YlGnBu', cbar=i == 0,
                          cbar_ax=None if i else cbar_ax)
         im.set_xticklabels(np.arange(0, args.n_gram, 1), rotation=45)
         im.set_yticklabels(np.arange(1, args.n_gram + 1, 1))

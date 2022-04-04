@@ -16,6 +16,7 @@ class Transformer(nn.Module):
         self.n_head = args.n_head
         self.d_k = args.d_k
         self.d_v = args.d_v
+        self.scaled_attn = args.scaled_attn
         self.dropout = args.dropout
 
         self.n_word = args.n_word
@@ -33,7 +34,8 @@ class Transformer(nn.Module):
         self.layer_norm = nn.LayerNorm(self.d_model, eps=1e-6)
 
         # transformer
-        self.encoder = Encoder(self.n_layer, self.d_model, self.d_inner, self.n_head, self.d_k, self.d_v, self.dropout)
+        self.encoder = Encoder(self.n_layer, self.d_model, self.d_inner, self.n_head, self.d_k, self.d_v,
+                               self.scaled_attn, self.dropout)
 
         # predictor
         self.weight_sharing = args.weight_sharing
