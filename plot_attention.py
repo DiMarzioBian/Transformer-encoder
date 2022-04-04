@@ -11,10 +11,12 @@ def main():
     parser = argparse.ArgumentParser(description='Evaluate Transformer model')
     parser.add_argument('--device', type=str, default='cuda:0',
                         help='device for computing')
-    parser.add_argument('--path_model', type=str, default='./result/models/model.pt',
-                        help='path of the trained model')
     parser.add_argument('--path_data_processed', type=str, default='./data/wikitext-2/data.pkl',
                         help='path of the processed data')
+    parser.add_argument('--path_model', type=str, default='./result/models/model.pt',
+                        help='path of the trained model')
+    parser.add_argument('--path_image', type=str, default='./result/images/',
+                        help='path of the images')
 
     # data settings
     parser.add_argument('--num_worker', type=int, default=0,
@@ -58,6 +60,7 @@ def main():
                         top=0.98,
                         wspace=0.1,
                         hspace=0.13)
+    fig.savefig(args.path_image + 'attn.jpg')
     fig.show()
 
     # plot postional encoding
@@ -68,6 +71,7 @@ def main():
     plt.xticks(rotation=45)
     fig.supxlabel('Index of word index dimension')
     fig.supylabel('Position of word')
+    fig.savefig(args.path_image + 'pos_enc.jpg')
     fig.show()
 
 
