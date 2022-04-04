@@ -17,6 +17,7 @@ optional arguments:
   --d_model                 model feature dimension
   --n_head                  number of attention heads
   --d_inner                 hidden representation size of the feed-forward layer
+  --scaled_attn             scale attention in multi-head attention layer
   
   --pad_number              pad all numbers to a same <num>
   --lower_char              lower cases of characters

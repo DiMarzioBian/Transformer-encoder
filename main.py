@@ -22,7 +22,7 @@ def main():
     parser.add_argument('--d_inner', type=int, default=1024,
                         help='hidden representation size of the feed-forward layer')
     parser.add_argument('--scaled_attn', type=bool, default=False,
-                        help='enable scaled attention in multi-head attention layer')
+                        help='scale attention in multi-head attention layer')
 
     # preprocess
     parser.add_argument('--pad_number', type=bool, default=True,
