@@ -1,6 +1,6 @@
 # Transformer-encoder
 
-This is a toy PyTorch implementation for the NIPS'17 paper [Attention is all you need](https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html)
+This is an unofficialtoy PyTorch implementation for the NIPS'17 paper [Attention is all you need](https://proceedings.neurips.cc/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html)
 
 This repo works on next-word prediction task, which is only for learning purposes.
 
